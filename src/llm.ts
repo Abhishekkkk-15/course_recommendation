@@ -5,7 +5,7 @@ config();
 
 const MODELS = {
   EMBEDDING: "mistral-embed",
-  CHAT: "openai/gpt-oss-120b",
+  CHAT: "openai/gpt-oss-20b",
 };
 
 export const PROMPTS = {
@@ -33,7 +33,7 @@ Extraction Guidelines:
 2. level: Select the appropriate level ("Beginner", "Intermediate", "Advanced", or "All").
 3. semantic_query: Extract the core learning topics, skills, technologies, or keywords optimized for vector similarity search. Remove conversational filler (e.g. "I want to learn", "recommend me courses for", "under 5000", "cheap").
 4. max_price: If the student specified a budget limit (e.g., "under 5000", "below 10k", "max ₹6000"), extract it as a numeric value (e.g. 5000, 10000, 6000). If no price limit is mentioned, return null.
-5. show_all: If the student explicitly requests to see all courses regardless of filters (e.g., "show me all courses", "I want to see everything"), set this to true. Otherwise, set it to false.
+5. show_all: If the student explicitly requests to see all courses regardless of filters (e.g., "show me all courses", "I want to see everything"), set this to true. Otherwise, set it to false, its boolean value not a string.
 
 Student Query:
 """

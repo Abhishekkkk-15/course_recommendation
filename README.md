@@ -1,6 +1,5 @@
 # Course Recommendation
-  A simple, lightweight recommendation engine designed to suggest relevant courses based on user preferences and learning goals.
-
+An AI-powered semantic search and recommendation tool that pairs vector embeddings with metadata filtering to suggest learning course's.
 ## What it does
 
 1. Loads course data from `static/Course_Dummy_Data.csv`.
