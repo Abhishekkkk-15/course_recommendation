@@ -1,0 +1,21 @@
+{
+  "name": "course_recommendation",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  
+  "scripts": {
+    "test": "echo \"Error: no test spedcified\" && exit 1",
+    "dev":"tsc && nodemon dist/index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@langchain/core": "^1.2.9",
+    "@langchain/openai": "^1.5.11",
+    "@types/express": "^5.0.6",
+    "express": "^5.2.1"
+  }
+}
