@@ -15,7 +15,7 @@ An AI-powered semantic search and recommendation tool that pairs vector embeddin
 ## Tech Stack
 
 - **Backend**: Node.js, Express, TypeScript
-- **AI / LLM**: LangChain (`@langchain/openai`), Groq (`gpt-oss-120b` / ChatOpenAI), Mistral (`mistral-embed`)
+- **AI / LLM**: LangChain (`@langchain/openai`), Groq (`openai/gpt-oss-20b` / ChatOpenAI), Mistral (`mistral-embed`)
 - **Validation**: Zod
 - **Frontend**: Plain HTML, CSS, JavaScript (no heavy frameworks, uses `marked.js` to render markdown)
 
