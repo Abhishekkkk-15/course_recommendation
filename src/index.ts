@@ -5,23 +5,13 @@ import path from "path";
 import fs from "fs";
 
 const csvPath = path.join(process.cwd(), "static", "Course_Dummy_Data.csv");
-const assetsPath =
-  fs.existsSync(path.join(process.cwd(), "assests")) ?
-    path.join(process.cwd(), "assests")
-  : path.join(process.cwd(), "assets");
+const assetsPath = path.join(process.cwd(), "assets");
 
 const app = express();
 
 // Middleware
 app.use(express.json());
 app.use(express.static(assetsPath));
-// Also serve assets folder if both exist
-if (fs.existsSync(path.join(process.cwd(), "assets"))) {
-  app.use(express.static(path.join(process.cwd(), "assets")));
-}
-if (fs.existsSync(path.join(process.cwd(), "assests"))) {
-  app.use(express.static(path.join(process.cwd(), "assests")));
-}
 
 async function main() {
   try {

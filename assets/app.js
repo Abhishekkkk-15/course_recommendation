@@ -93,10 +93,12 @@ async function performSearch(query) {
   showStatus("");
 
   try {
-    const res = await fetch(`/query?q=${encodeURIComponent(query)}`);
+    const res = await fetch(`/api/query?q=${encodeURIComponent(query)}`);
     if (!res.ok) {
       const errJson = await res.json().catch(() => ({}));
-      throw new Error(errJson.error || `Server responded with status ${res.status}`);
+      throw new Error(
+        errJson.error || `Server responded with status ${res.status}`,
+      );
     }
 
     const data = await res.json();
@@ -129,7 +131,10 @@ function parseMarkdown(markdownText) {
   if (!markdownText) return "";
 
   // 1. Use marked.js if available
-  if (typeof window.marked !== "undefined" && typeof window.marked.parse === "function") {
+  if (
+    typeof window.marked !== "undefined" &&
+    typeof window.marked.parse === "function"
+  ) {
     try {
       window.marked.setOptions({
         gfm: true,
@@ -170,7 +175,7 @@ function fallbackMarkdownParser(text) {
   html = html.replace(/\n\n+/g, "</p><p>");
   html = html.replace(/\n/g, "<br />");
   html = `<p>${html}</p>`;
-  
+
   // Cleanup empty p tags around block elements
   html = html.replace(/<p><(h[1-4]|ul|ol|li|blockquote)>/g, "<$1>");
   html = html.replace(/<\/(h[1-4]|ul|ol|li|blockquote)><\/p>/g, "</$1>");
@@ -198,8 +203,9 @@ function renderCourses(courses, title = "Available Catalog Courses") {
     const card = document.createElement("article");
     card.className = "course-card";
 
-    const priceFormatted = course.price !== undefined
-      ? `\u20B9${Number(course.price).toLocaleString("en-IN")}`
+    const priceFormatted =
+      course.price !== undefined ?
+        `\u20B9${Number(course.price).toLocaleString("en-IN")}`
       : "N/A";
 
     const statusClass = (course.status || "active").toLowerCase();
