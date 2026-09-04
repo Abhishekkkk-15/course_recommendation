@@ -1,0 +1,16 @@
+id,course_name,category,description,price,level,status
+101,CA Foundation Complete Course,CA,"Complete CA Foundation preparation covering Accounts, Law, Economics and Quantitative Aptitude.",9999,Beginner,Active
+102,CA Intermediate Group 1,CA,"Preparation for Advanced Accounting, Corporate Law, Taxation and Cost Management.",14999,Intermediate,Active
+103,CA Intermediate Group 2,CA,"Preparation for Auditing, Strategic Management, Financial Management and Strategic Cost Management.",13999,Intermediate,Active
+104,CS Executive Complete Course,CS,Complete preparation course for CS Executive-level subjects.,12999,Intermediate,Active
+105,CMA Foundation Course,CMA,"Foundation course covering Accounting, Economics, Business Laws and Mathematics.",8999,Beginner,Active
+106,CMA Intermediate Complete Course,CMA,"CMA Intermediate preparation covering accounting, taxation, costing, laws and financial management.",14999,Intermediate,Active
+107,GST Certification Course,Certification,"Practical GST course covering registration, returns, input tax credit and compliance.",4999,Beginner,Active
+108,Financial Modelling Course,Finance,"Financial modelling covering Excel, financial statements, valuation and forecasting.",5999,Intermediate,Active
+109,Investment Banking Fundamentals,Finance,"Introduction to investment banking, valuation, financial modelling, M&A and deal processes.",6999,Beginner,Active
+110,Excel for Finance,Finance,"Excel course focused on financial analysis, formulas, dashboards and reporting.",2999,Beginner,Active
+111,Python for Beginners,Technology,"Introduction to Python covering fundamentals, functions, data structures and basic projects.",3999,Beginner,Active
+112,AI & Generative AI Fundamentals,Technology,"Introduction to AI, LLMs, prompt engineering and generative AI applications.",4999,Beginner,Active
+113,Advanced Excel & Power BI,Technology,Advanced Excel and Power BI covering data analysis and business dashboards.,5499,Intermediate,Active
+114,Business Analytics Course,Technology,"Business analytics covering data analysis, visualization, Excel and SQL.",6499,Intermediate,Active
+115,Corporate Finance Essentials,Finance,"Course covering financial statements, capital budgeting and corporate financial decisions.",4499,Intermediate,Inactive
