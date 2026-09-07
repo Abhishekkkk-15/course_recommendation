@@ -24,7 +24,7 @@ An AI-powered semantic search and recommendation tool that pairs vector embeddin
 ## Setup Instructions
 
 ### 1. Prerequisites
-Make sure you have [Node.js](https://nodejs.org/) installed (v18 or higher recommended).
+Make sure you have [Node.js](https://nodejs.org/) installed.
 
 ### 2. Install dependencies
 Open terminal in the project folder and run:
