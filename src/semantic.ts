@@ -12,9 +12,9 @@ export const Categories = [
   "All",
 ] as const;
 
-type Level = "All" | "Beginner" | "Intermediate" | "Advanced";
+export type Level = "All" | "Beginner" | "Intermediate" | "Advanced";
 
-type TCategory = (typeof Categories)[number];
+export type TCategory = (typeof Categories)[number];
 
 export type DataRow = {
   id: string;
