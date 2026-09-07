@@ -6,6 +6,7 @@
   "scripts": {
     "test": "vitest",
     "dev": "tsc && node dist/src/index.js",
+    "evals": "tsc && node dist/evals/run_evals.js",
     "build": "tsc",
     "start": "node dist/src/index.js"
   },

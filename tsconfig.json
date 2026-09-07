@@ -43,7 +43,8 @@
     "skipLibCheck": true,
   },
   "include": [
-    "src/**/*"                           // 👈 Make sure this points only inside src
+    "src/**/*"    ,
+    "evals/**/*"                       // 👈 Make sure this points only inside src
   ],
    "exclude": [
     "node_modules",

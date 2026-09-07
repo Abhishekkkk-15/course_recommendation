@@ -6,7 +6,7 @@ config();
 
 const MODELS = {
   EMBEDDING: "mistral-embed",
-  CHAT: "openai/gpt-oss-20b",
+  CHAT: "openai/gpt-oss-120b",
 };
 
 export const PROMPTS = {
@@ -84,8 +84,7 @@ export const ResponseSchema = z.object({
       "The maximum price/budget as a number if mentioned by the user (e.g. 5000), or null if unconstrained.",
     ),
   show_all: z
-    .boolean()
-    .default(false)
+    .stringbool()
     .describe(
       "Indicates if the user wants to see all courses regardless of filters.",
     ),
@@ -99,6 +98,7 @@ export class LLM {
   constructor() {
     this.client = new ChatOpenAI({
       model: MODELS.CHAT,
+      temperature: 0,
       apiKey: process.env.CHAT_API_KEY || "",
       configuration: {
         baseURL:
@@ -114,7 +114,7 @@ export class LLM {
     });
   }
 
-  async analyzeAgent(query: string) {
+  async analyzeAgent(query: string): Promise<AnalyzedQuery> {
     const prompt = PROMPTS.ANALYZE(query);
     if (!this.client) {
       throw new Error("OpenAI client is not initialized.");
