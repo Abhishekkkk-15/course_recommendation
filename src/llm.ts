@@ -1,3 +1,4 @@
+import type { ContentBlock } from "@langchain/core/messages";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { config } from "dotenv";
 import { z } from "zod";
@@ -124,7 +125,10 @@ export class LLM {
     return response;
   }
 
-  async generateRecommendation(query: string, context: string) {
+  async generateRecommendation(
+    query: string,
+    context: string,
+  ): Promise<string | (ContentBlock | Text)[]> {
     const prompt = PROMPTS.QUERY(query, context);
     if (!this.client) {
       throw new Error("OpenAI client is not initialized.");

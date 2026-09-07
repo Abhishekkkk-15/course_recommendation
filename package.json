@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test spedcified\" && exit 1",
+    "test": "vitest",
     "dev": "tsc && node dist/src/index.js",
     "build": "tsc",
     "start": "node dist/src/index.js"
