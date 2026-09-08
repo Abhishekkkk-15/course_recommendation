@@ -155,3 +155,10 @@ export const evaleSuite: TEvaleSuite[] = [
     expectedShowAll: false,
   },
 ];
+
+export const limitDataSet = (
+  dataset: TEvaleSuite[],
+  limit: number,
+): TEvaleSuite[] => {
+  return dataset.slice(0, limit);
+};
