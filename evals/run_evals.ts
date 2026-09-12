@@ -1,6 +1,7 @@
 import { evaleSuite, type TEvaleSuite } from "./dataset.js";
 import { type AnalyzedQuery, LLM } from "../src/llm.js";
 import { run } from "./retrival_evals.js";
+import { judge_eval } from "./judge_evals.js";
 import { metrics as retrivalMetrics } from "./retrival_evals.js";
 const llm = new LLM();
 
@@ -101,4 +102,5 @@ function validate(expected: TEvaleSuite, agent_res: AnalyzedQuery) {
 }
 
 // run_suite();
-run();
+// run();
+judge_eval();
