@@ -2,6 +2,8 @@ import type { ContentBlock } from "@langchain/core/messages";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { config } from "dotenv";
 import { z } from "zod";
+import { judgeEvaluationSchema } from "../evals/judge_evals.js";
+
 config();
 
 const MODELS = {
@@ -91,7 +93,7 @@ export const ResponseSchema = z.object({
 });
 
 export type AnalyzedQuery = z.infer<typeof ResponseSchema>;
-
+export type JudgeEvalQuery = z.infer<typeof judgeEvaluationSchema>;
 export class LLM {
   private client: ChatOpenAI;
   embeddings: OpenAIEmbeddings;
@@ -135,5 +137,15 @@ export class LLM {
     }
     const response = await this.client.invoke(prompt);
     return response.content;
+  }
+
+  async invoke(prompt: string): Promise<JudgeEvalQuery> {
+    if (!this.client) {
+      throw new Error("OpenAI client is not initialized.");
+    }
+
+    const llm = this.client.withStructuredOutput(judgeEvaluationSchema);
+    const response = await llm.invoke(prompt);
+    return response;
   }
 }
