@@ -36,7 +36,7 @@ export async function run() {
         element.userQuery,
         element.expectedLevel,
         element.expectedCategory,
-        element.expectedBudget,
+        element.expectedBudget
       );
 
       const retrievedIds: string[] = res.map((e) => String(e.metadata.id));
@@ -64,7 +64,11 @@ export async function run() {
       totalRecallScore += queryRecall;
       totalMRRScore += reciporalRank;
       console.log(
-        `Query: "${element.userQuery}" | Expected: ${expectedIdStr} | Found: ${found} | Reciprocal Rank: ${reciporalRank.toFixed(2)}`,
+        `Query: "${
+          element.userQuery
+        }" | Expected: ${expectedIdStr} | Found: ${found} | Reciprocal Rank: ${reciporalRank.toFixed(
+          2
+        )}`
       );
     } catch (error) {
       console.error("Error processing query:", error);
@@ -76,6 +80,8 @@ export async function run() {
   metrics.mrr = limitedData.length > 0 ? totalMRRScore / limitedData.length : 0;
   console.log("Final Evaluated Metrics:", {
     recall: `${(metrics.recall * 100).toFixed(2)}%`,
-    mrr: `${(metrics.mrr * 100).toFixed(2)}% (Score: ${metrics.mrr.toFixed(3)})`,
+    mrr: `${(metrics.mrr * 100).toFixed(2)}% (Score: ${metrics.mrr.toFixed(
+      3
+    )})`,
   });
 }

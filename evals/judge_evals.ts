@@ -1,17 +1,14 @@
 import { limitDataSet, evaleSuite } from "./dataset.js";
-import { string, z } from "zod";
+import { z } from "zod";
 import { Store, loadDataSet, type DataRow } from "../src/semantic.js";
 import path from "path";
 import { wait } from "./run_evals.js";
 
 const csvPath = path.join(process.cwd(), "static", "Course_Dummy_Data.csv");
 import { LLM } from "../src/llm.js";
-import { ChatOpenAI } from "@langchain/openai";
-const llm = new LLM();
-const store = new Store(llm.embeddings);
 
 const dataset = await loadDataSet(csvPath);
-const limitedData = limitDataSet(evaleSuite, 1);
+const limitedData = limitDataSet(evaleSuite, 8);
 
 export const judgeEvaluationSchema = z.object({
   faithfulnessScore: z
@@ -19,19 +16,19 @@ export const judgeEvaluationSchema = z.object({
     .min(1)
     .max(5)
     .describe(
-      "% if strictly grounded in context, 1 if it invents non-existent courses or prices",
+      "% if strictly grounded in context, 1 if it invents non-existent courses or prices"
     ),
   relevanceScore: z
     .number()
     .min(1)
     .max(5)
     .describe(
-      "5 if it directly addresses the student's query, 1 if completely irrelevant",
+      "5 if it directly addresses the student's query, 1 if completely irrelevant"
     ),
   isHallucination: z
     .boolean()
     .describe(
-      "True if the response contains any factual claims not backed by the context",
+      "True if the response contains any factual claims not backed by the context"
     ),
   reasoning: z
     .string()
@@ -41,12 +38,20 @@ export const judgeEvaluationSchema = z.object({
 const buildPrompt = (
   userQuery: string,
   retrievedContext: DataRow[],
-  recommendationText: string,
+  recommendationText: string
 ): string => {
   const to_string = retrievedContext
     .map(
       (row) =>
-        `[${row.id}] ${row.course_name} (${row.category}) - $${row.price} [${row.status}]`,
+        `[
+          Id: ${row.id}] 
+          Name: ${row.course_name} 
+          Description: ${row.description}
+          Category: (${row.category}) 
+          Level: ${row.level}
+          Price: ${row.price}
+          Status: ${row.status}
+        ]`
     )
     .join("\n");
 
@@ -61,7 +66,7 @@ const buildPrompt = (
     ${userQuery}
 
     [PROVIDED COURSE CONTEXT]:
-    ${retrievedContext}
+    ${to_string}
 
     [GENERATED RECOMMENDATION]:
     ${recommendationText}
@@ -87,14 +92,16 @@ const buildPrompt = (
 };
 
 export async function judge_eval() {
+  const llm = new LLM();
+  const store = new Store(llm.embeddings);
   await store.addData(dataset);
   for (const element of limitedData) {
-    await wait(1000);
+    await wait(3000);
     const res = await store.queryData(
       element.userQuery,
       element.expectedLevel,
       element.expectedCategory,
-      element.expectedBudget,
+      element.expectedBudget
     );
     const formattedResults = res.map((r: any) => {
       if (r.metadata) {
@@ -120,12 +127,13 @@ export async function judge_eval() {
     });
     const recommendation = await llm.generateRecommendation(
       element.userQuery,
-      JSON.stringify(formattedResults),
+      JSON.stringify(formattedResults)
     );
+    // console.log(recommendation);
     const judge_prompt = buildPrompt(
       element.userQuery,
       formattedResults,
-      recommendation as string,
+      recommendation as string
     );
     const judge_res = await llm.invoke(judge_prompt);
     console.log(judge_res);

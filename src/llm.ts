@@ -51,7 +51,7 @@ Instructions:
 2. For each recommended course, include:
    - Course Name and Category
    - Difficulty Level and Price
-   - Key topics covered and why it fits the student's specific goal
+   - Key topics covered and why it fits the student's specific goal (Don't invent any thing, show only key topics if they are present in context)
 3. If no course perfectly matches the criteria (or budget), explain the situation politely and suggest the closest available alternatives.
 4. Keep your response clear, well-structured, encouraging, and easy to read.
 5. Strictly base your recommendations on the provided course data. Do not make up non-existent courses, pricing and other information.
