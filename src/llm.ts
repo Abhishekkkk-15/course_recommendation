@@ -65,28 +65,28 @@ export const ResponseSchema = z.object({
   category: z
     .enum(["CA", "CS", "CMA", "Certification", "Finance", "Technology", "All"])
     .describe(
-      "The most relevant course category: CA, CS, CMA, Certification, Finance, Technology, or All if unspecified.",
+      "The most relevant course category: CA, CS, CMA, Certification, Finance, Technology, or All if unspecified."
     ),
   level: z
     .enum(["Beginner", "Intermediate", "Advanced", "All"])
     .describe(
-      "The course difficulty level: Beginner, Intermediate, Advanced, or All if unspecified.",
+      "The course difficulty level: Beginner, Intermediate, Advanced, or All if unspecified."
     ),
   semantic_query: z
     .string()
     .describe(
-      "A cleaned, keyword-rich search phrase stripped of budget/filler words, optimized for semantic embedding search.",
+      "A cleaned, keyword-rich search phrase stripped of budget/filler words, optimized for semantic embedding search."
     ),
   max_price: z
     .number()
     .nullable()
     .describe(
-      "The maximum price/budget as a number if mentioned by the user (e.g. 5000), or null if unconstrained.",
+      "The maximum price/budget as a number if mentioned by the user (e.g. 5000), or null if unconstrained."
     ),
   show_all: z
     .stringbool()
     .describe(
-      "Indicates if the user wants to see all courses regardless of filters.",
+      "Indicates if the user wants to see all courses regardless of filters."
     ),
 });
 
@@ -127,7 +127,7 @@ export class LLM {
 
   async generateRecommendation(
     query: string,
-    context: string,
+    context: string
   ): Promise<string | (ContentBlock | Text)[]> {
     const prompt = PROMPTS.QUERY(query, context);
     if (!this.client) {
