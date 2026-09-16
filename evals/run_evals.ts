@@ -3,7 +3,7 @@ import { type AnalyzedQuery, LLM } from "../src/llm.js";
 import { run } from "./retrival_evals.js";
 import { judge_eval } from "./judge_evals.js";
 import { metrics as retrivalMetrics } from "./retrival_evals.js";
-const llm = new LLM();
+
 
 export async function wait(time: number): Promise<void> {
   return new Promise((res, rej) =>
@@ -30,6 +30,7 @@ let metrics: TMatrics = {
 };
 
 async function run_suite() {
+  const llm = new LLM();
   for (const element of evaleSuite) {
     await wait(2000);
     try {
@@ -117,4 +118,4 @@ function validate(expected: TEvaleSuite, agent_res: AnalyzedQuery) {
 
 // run_suite();
 // run();
-judge_eval();
+// judge_eval();

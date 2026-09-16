@@ -12,8 +12,6 @@ type TRetrivalMetrics = {
   mrr: number;
 };
 
-const llm = new LLM();
-const store = new Store(llm.embeddings);
 
 const dataset = await loadDataSet(csvPath);
 
@@ -25,6 +23,8 @@ export const metrics: TRetrivalMetrics = {
 const limitedData = limitDataSet(evaleSuite, 16);
 
 export async function run() {
+const llm = new LLM();
+const store = new Store(llm.embeddings);
   await store.addData(dataset);
 
   let totalRecallScore = 0;
