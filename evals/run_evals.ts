@@ -4,12 +4,11 @@ import { run } from "./retrival_evals.js";
 import { judge_eval } from "./judge_evals.js";
 import { metrics as retrivalMetrics } from "./retrival_evals.js";
 
-
 export async function wait(time: number): Promise<void> {
   return new Promise((res, rej) =>
     setTimeout(() => {
       res();
-    }, time)
+    }, time),
   );
 }
 
@@ -50,17 +49,17 @@ async function run_suite() {
         if (!valid_res.categoryAccuracy) {
           if (!valid_res.categoryAccuracy) {
             console.log(
-              `   Category -> Expected: ${element.expectedCategory} | Got: ${res.category}`
+              `   Category -> Expected: ${element.expectedCategory} | Got: ${res.category}`,
             );
           }
           if (!valid_res.levelAccuracy) {
             console.log(
-              `   Level    -> Expected: ${element.expectedLevel} | Got: ${res.level}`
+              `   Level    -> Expected: ${element.expectedLevel} | Got: ${res.level}`,
             );
           }
           if (!valid_res.priceAccuracy) {
             console.log(
-              `   Budget   -> Expected: ${element.expectedBudget} | Got: ${res.max_price}`
+              `   Budget   -> Expected: ${element.expectedBudget} | Got: ${res.max_price}`,
             );
           }
         } else {
@@ -77,19 +76,19 @@ async function run_suite() {
     `Category Accuracy: ${metrics.categoryAccuracy}/${LENGTH} (${(
       (metrics.categoryAccuracy / LENGTH) *
       100
-    ).toFixed(1)}%)`
+    ).toFixed(1)}%)`,
   );
   console.log(
     `Level Accuracy:    ${metrics.levelAccuracy}/${LENGTH} (${(
       (metrics.levelAccuracy / LENGTH) *
       100
-    ).toFixed(1)}%)`
+    ).toFixed(1)}%)`,
   );
   console.log(
     `Price Accuracy:    ${metrics.priceAccuracy}/${LENGTH} (${(
       (metrics.priceAccuracy / LENGTH) *
       100
-    ).toFixed(1)}%)`
+    ).toFixed(1)}%)`,
   );
   console.log(
     `Show All Accuracy:    ${metrics.show_all}/${
@@ -97,7 +96,7 @@ async function run_suite() {
     } (${(
       (metrics.show_all / evaleSuite.filter((d) => d.expectedShowAll).length) *
       100
-    ).toFixed(1)}%)`
+    ).toFixed(1)}%)`,
   );
 }
 
@@ -118,4 +117,4 @@ function validate(expected: TEvaleSuite, agent_res: AnalyzedQuery) {
 
 // run_suite();
 // run();
-// judge_eval();
+judge_eval();

@@ -6,8 +6,79 @@ import { judgeEvaluationSchema } from "../evals/judge_evals.js";
 
 config();
 
+interface RetryOptions {
+  maxRetries?: number;
+  initialDelayMs?: number; // e.g., 2000 for 2 seconds
+  backoffFactor?: number; // multiplier, default 2 (2s -> 4s -> 8s)
+  maxDelayMs?: number; // ceiling cap to prevent indefinite waits
+}
+
+/**
+ * Executes an async operation with exponential backoff on HTTP 429 errors.
+ */
+export async function withRateLimitRetry<T>(
+  fn: () => Promise<T>,
+  options: RetryOptions = {},
+): Promise<T> {
+  const {
+    maxRetries = 5,
+    initialDelayMs = 2000,
+    backoffFactor = 2,
+    maxDelayMs = 30000,
+  } = options;
+
+  let delay = initialDelayMs;
+
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await fn();
+    } catch (error: any) {
+      // Detect rate-limit (LangChain / OpenAI SDK / Axios / fetch formats)
+      const isRateLimit =
+        error?.status === 429 ||
+        error?.statusCode === 429 ||
+        error?.response?.status === 429 ||
+        error?.code === "rate_limit_exceeded";
+
+      if (!isRateLimit || attempt === maxRetries) {
+        throw error;
+      }
+
+      // Check for a standard "Retry-After" header in the response (seconds or ms)
+      const retryAfterHeader =
+        error?.response?.headers?.["retry-after"] ??
+        error?.headers?.get?.("retry-after");
+
+      let waitTime = delay;
+      if (retryAfterHeader) {
+        const parsedSeconds = Number(retryAfterHeader);
+        if (!isNaN(parsedSeconds)) {
+          waitTime = parsedSeconds * 1000;
+        }
+      }
+
+      // Add a slight random jitter (0-200ms) to avoid thundering herd issues
+      const jitter = Math.floor(Math.random() * 200);
+      const totalWait = Math.min(waitTime + jitter, maxDelayMs);
+
+      console.warn(
+        `[Rate Limit 429] Retrying in ${totalWait}ms (Attempt ${attempt}/${maxRetries})...`,
+      );
+
+      await new Promise((resolve) => setTimeout(resolve, totalWait));
+
+      // Calculate the next exponential delay
+      delay = Math.min(delay * backoffFactor, maxDelayMs);
+    }
+  }
+
+  throw new Error("Exceeded maximum retries for rate limit.");
+}
+
 const MODELS = {
   EMBEDDING: "mistral-embed",
+  INVDIA_EMBEDDING: "nvidia/nemotron-3-embed-1b",
+  JIRA_EMBEDDING: "jina-embeddings-v5-omni-small",
   CHAT: "openai/gpt-oss-120b",
 };
 
@@ -67,28 +138,28 @@ export const ResponseSchema = z.object({
   category: z
     .enum(["CA", "CS", "CMA", "Certification", "Finance", "Technology", "All"])
     .describe(
-      "The most relevant course category: CA, CS, CMA, Certification, Finance, Technology, or All if unspecified."
+      "The most relevant course category: CA, CS, CMA, Certification, Finance, Technology, or All if unspecified.",
     ),
   level: z
     .enum(["Beginner", "Intermediate", "Advanced", "All"])
     .describe(
-      "The course difficulty level: Beginner, Intermediate, Advanced, or All if unspecified."
+      "The course difficulty level: Beginner, Intermediate, Advanced, or All if unspecified.",
     ),
   semantic_query: z
     .string()
     .describe(
-      "A cleaned, keyword-rich search phrase stripped of budget/filler words, optimized for semantic embedding search."
+      "A cleaned, keyword-rich search phrase stripped of budget/filler words, optimized for semantic embedding search.",
     ),
   max_price: z
     .number()
     .nullable()
     .describe(
-      "The maximum price/budget as a number if mentioned by the user (e.g. 5000), or null if unconstrained."
+      "The maximum price/budget as a number if mentioned by the user (e.g. 5000), or null if unconstrained.",
     ),
   show_all: z
     .stringbool()
     .describe(
-      "Indicates if the user wants to see all courses regardless of filters."
+      "Indicates if the user wants to see all courses regardless of filters.",
     ),
 });
 
@@ -108,10 +179,12 @@ export class LLM {
       },
     });
     this.embeddings = new OpenAIEmbeddings({
-      modelName: MODELS.EMBEDDING,
+      modelName: MODELS.INVDIA_EMBEDDING,
       apiKey: process.env.OPENAI_API_KEY || "",
       configuration: {
-        baseURL: process.env.OPENAI_API_BASE_URL || "https://api.mistral.ai/v1",
+        baseURL:
+          process.env.OPENAI_API_BASE_URL ||
+          "https://integrate.api.nvidia.com/v1",
       },
     });
   }
@@ -122,20 +195,33 @@ export class LLM {
       throw new Error("OpenAI client is not initialized.");
     }
     const llm = this.client.withStructuredOutput(ResponseSchema);
-    const response = await llm.invoke(prompt);
+    // const response = await llm.invoke(prompt);
 
-    return response;
+    // return response;
+    return await withRateLimitRetry(() => llm.invoke(prompt), {
+      maxRetries: 4,
+      initialDelayMs: 2000,
+      backoffFactor: 2,
+    });
   }
 
   async generateRecommendation(
     query: string,
-    context: string
+    context: string,
   ): Promise<string | (ContentBlock | Text)[]> {
     const prompt = PROMPTS.QUERY(query, context);
     if (!this.client) {
       throw new Error("OpenAI client is not initialized.");
     }
-    const response = await this.client.invoke(prompt);
+    const response = await withRateLimitRetry(
+      () => this.client.invoke(prompt),
+      {
+        maxRetries: 4,
+        initialDelayMs: 2000,
+        backoffFactor: 2,
+      },
+    );
+
     return response.content;
   }
 
@@ -145,7 +231,10 @@ export class LLM {
     }
 
     const llm = this.client.withStructuredOutput(judgeEvaluationSchema);
-    const response = await llm.invoke(prompt);
-    return response;
+    return await withRateLimitRetry(() => llm.invoke(prompt), {
+      maxRetries: 4,
+      initialDelayMs: 2000,
+      backoffFactor: 2,
+    });
   }
 }
